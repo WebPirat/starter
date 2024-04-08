@@ -4,8 +4,6 @@ vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 vim.g.mapleader = " "
 
 vim.call('plug#begin')
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
 Plug('github/copilot.vim')
 vim.call('plug#end')
 -- bootstrap lazy and all plugins
@@ -56,6 +54,4 @@ end)
 
 -- Keybinding für das Ausführen von npm run test in einem horizontalen Terminal-Split
 vim.api.nvim_set_keymap('n', '<F5>', ':split term://npm run test<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fg', '<cmd>:Telescope live_grep<CR>', { noremap = true })
-
 
