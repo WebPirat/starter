@@ -1,13 +1,15 @@
-local Plug = vim.fn['plug#']
+local Plug = vim.fn["plug#"]
 
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 vim.g.mapleader = " "
 
-vim.call('plug#begin')
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-Plug('github/copilot.vim')
-vim.call('plug#end')
+vim.call "plug#begin"
+Plug "junegunn/fzf"
+Plug "junegunn/fzf.vim"
+Plug "stevearc/conform.nvim"
+Plug "github/copilot.vim"
+Plug "ziglang/zig.vim"
+vim.call "plug#end"
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
@@ -19,7 +21,15 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
-
+require("conform").setup {
+  formatters_by_ft = {
+    lua = { "stylua" },
+    -- Conform will run multiple formatters sequentially
+    python = { "isort", "black" },
+    -- Use a sub-list to run only the first available formatter
+    javascript = { { "prettierd", "prettier" } },
+  },
+}
 -- load plugins
 require("lazy").setup({
   {
@@ -54,8 +64,13 @@ vim.schedule(function()
   require "mappings"
 end)
 
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function(args)
+    require("conform").format { bufnr = args.buf }
+  end,
+})
+
 -- Keybinding für das Ausführen von npm run test in einem horizontalen Terminal-Split
-vim.api.nvim_set_keymap('n', '<F5>', ':split term://npm run test<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>fg', '<cmd>:Telescope live_grep<CR>', { noremap = true })
-
-
+vim.api.nvim_set_keymap("n", "<F5>", ":split term://npm run test<CR>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>:Telescope live_grep<CR>", { noremap = true })
